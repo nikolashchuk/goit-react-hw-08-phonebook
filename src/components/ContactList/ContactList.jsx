@@ -1,35 +1,25 @@
-import { useSelector } from 'react-redux';
-import { getFilteredContacts } from 'redux/selectors';
-import { useDispatch } from 'react-redux';
-import { deleteContact, fetchContacts } from 'redux/operations';
-import { useEffect } from 'react';
-
+import React from 'react';
 import PropTypes from 'prop-types';
-import { Info, Item, List } from './ContactList.styled';
+import { useSelector } from 'react-redux';
 
-export const ContactList = ({ item }) => {
-  const contacts = useSelector(getFilteredContacts);
-  const dispatch = useDispatch();
+import ContactListItem from 'components/ContactListItem/ContactListItem';
+import { selectVisibleContacts } from 'redux/selectors';
 
-  useEffect(() => {
-    dispatch(fetchContacts());
-  }, [dispatch]);
+export default function ContactList() {
+  const visibleContacts = useSelector(selectVisibleContacts);
 
   return (
-    <List>
-      {contacts.map(({ id, name, phone }) => {
+    <ul>
+      {visibleContacts.map(({ id, name, number }) => {
         return (
-          <Item key={id}>
-            <Info>
-              {name}: {phone}
-            </Info>
-            <button onClick={() => dispatch(deleteContact(id))}>Delete</button>
-          </Item>
+          <li key={id} style={{ paddingBottom: 12 }}>
+            <ContactListItem id={id} name={name} number={number} />
+          </li>
         );
       })}
-    </List>
+    </ul>
   );
-};
+}
 
 ContactList.propTypes = {
   contacts: PropTypes.arrayOf(
